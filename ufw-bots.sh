@@ -70,7 +70,7 @@ definir_drop() {
 ajouter_cron() {
     read -p "Veuillez saisir le chemin du script (par défaut: $default_script_path) : " script_path
     script_path=${script_path:-$default_script_path}
-    cron_job="0 3 * * * $script_path -block-ips-slience"
+    cron_job="0 3 * * * $script_path -block-ips-silence"
 
     export EDITOR=nano
     (crontab -l ; echo "$cron_job") | crontab
@@ -78,7 +78,7 @@ ajouter_cron() {
     echo "La tâche cron a été ajoutée avec succès pour exécuter le script toutes les 24 heures."
 }
 
-if [[ $1 == "-block-ips-slience" ]]; then
+if [[ $1 == "-block-ips-silence" ]]; then
     bloquer_ips &>/dev/null
     exit
 fi
