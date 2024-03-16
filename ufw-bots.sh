@@ -72,10 +72,19 @@ ajouter_cron() {
     script_path=${script_path:-$default_script_path}
     cron_job="0 3 * * * $script_path -block-ips-silence"
 
-    export EDITOR=nano
-    (crontab -l ; echo "$cron_job") | crontab
-
-    echo "La tâche cron a été ajoutée avec succès pour exécuter le script toutes les 24 heures."
+       if crontab -l | grep -qF "$cron_job"; then
+        read -p "La tâche cron existe déjà. Voulez-vous la supprimer ? (O/N) : " choix
+        case $choix in
+            [Oo]*)
+                (crontab -l | grep -vF "$cron_job" && echo "") | crontab - ;;
+            [Nn]*) ;;
+            *) echo "Choix invalide. La tâche cron n'a pas été modifiée." ;;
+        esac
+    else
+        export EDITOR=nano
+        (crontab -l ; echo "$cron_job") | crontab -
+        echo "La tâche cron a été ajoutée avec succès pour exécuter le script toutes les 24 heures."
+    fi
 }
 
 if [[ $1 == "-block-ips-silence" ]]; then
